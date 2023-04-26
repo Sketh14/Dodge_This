@@ -1,3 +1,11 @@
 -------------------------------------------------------------------
 							26th April
 -------------------------------------------------------------------
+=> Made simple UI
+	(-) Pause button
+=> making player controller
+	(-) player can jump as high as the total height of the screen while doing double jump.
+	(-) jumpForce is 25f.
+=> Keeping default gravity scale to 9.
+=> Could code such that, the Spawn is invoked 2 or 3 times in a single Call.
+=> [Importatant] Set to IL2CPP for build
