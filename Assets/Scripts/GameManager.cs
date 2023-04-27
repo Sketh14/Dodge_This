@@ -9,7 +9,7 @@ namespace Double_Jump
         public PlayerController playerControllerReference;
 
         [Header("Power Ups Section")]
-        public bool gameStarted;
+        public bool gameStarted, gamePaused;
         //protected bool ;
 
         private static GameManager _instance;

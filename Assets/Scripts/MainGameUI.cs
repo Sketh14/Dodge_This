@@ -1,14 +1,17 @@
+//#define MOBILE_CONTROLS                           //Uncomment for real gameplay
+
 using System.Collections;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
 namespace Double_Jump
 {
     public class MainGameUI : MonoBehaviour
     {
         [Header("UI")]
-        [SerializeField] private GameObject gameOverPanel;
+        [SerializeField] private GameObject gameOverPanel, pausedBanner;
         [SerializeField] private RawImage clickImg;
         private float blinkRateMultiplier = 1f;                //blink rate of 1f is enough
         [SerializeField] private TMP_Text currentScoreTxt, finalScoreTxt;
@@ -20,27 +23,53 @@ namespace Double_Jump
         private int score;
         private Coroutine clickBlinkCoroutine;
 
+        [Header("Animation")]
+        [SerializeField] private Animator cameraAnimator;
+        [SerializeField] private string[] cameraAnimatorStates;
+
+        [Header("SFX")]
+        [SerializeField] private AudioSource bgm_Source;
+
         private void OnEnable()
         {
-            localGameLogic.OnPlayerUnAlive += ShowGameOverPanel;
+            localGameLogic.OnPlayerUnAlive += InvokeGameOverUpdate;
             localGameLogic.OnPlayerScored += UpdateScore;
         }
 
         private void OnDisable()
         {
-            localGameLogic.OnPlayerUnAlive -= ShowGameOverPanel;
+            localGameLogic.OnPlayerUnAlive -= InvokeGameOverUpdate;
             localGameLogic.OnPlayerScored -= UpdateScore;
         }
 
-        private void ShowGameOverPanel(bool dummyData)
+        private void InvokeGameOverUpdate(bool dummyData)
+        {
+            cameraAnimator.Play(cameraAnimatorStates[0], 0, 0f);
+            Invoke(nameof(ShowGameOverPanel), 0.6f);
+        }
+
+        private void ShowGameOverPanel()
         {
             gameOverPanel.SetActive(true);
             finalScoreTxt.text = score.ToString();
+            bgm_Source.Stop();
         }
 
         private void Start()
         {
             clickBlinkCoroutine = StartCoroutine(ClickBlink());
+        }
+
+        private void Update()
+        {
+#if MOBILE_CONTROLS
+            if (gamePaused && Touch.activeTouches.Count > 0 && Touch.activeTouches[0].phase == UnityEngine.InputSystem.TouchPhase.Began)
+#else
+            if (GameManager.instance.gamePaused && UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                ToggleGameStatus(false);
+            }
+#endif
         }
 
         //On Restart button under Game Over Panel
@@ -55,9 +84,33 @@ namespace Double_Jump
         {
             localGameLogic.OnGameStarted?.Invoke();
             GameManager.instance.gameStarted = true;
+            bgm_Source.Play();
 
             if (clickBlinkCoroutine != null)
                 StopCoroutine(clickBlinkCoroutine);
+        }
+
+        //On Pause and Resume button, under Main Gameplay Panel
+        public void ToggleGameStatus(bool pauseEnabled)
+        {
+            //Debug.Log($"Toggle Game Status called, status : {pauseEnabled}");
+            if (pauseEnabled)
+            {
+                GameManager.instance.gamePaused = true;
+                Time.timeScale = 0f;
+                pausedBanner.SetActive(true);
+            }
+            else
+            {
+                Time.timeScale = 1f;
+                pausedBanner.SetActive(false);
+                Invoke(nameof(SetGamePauseStatus), 0.1f);
+            }
+        }
+
+        private void SetGamePauseStatus()
+        {
+            GameManager.instance.gamePaused = false;
         }
 
         private void UpdateScore()
@@ -68,7 +121,7 @@ namespace Double_Jump
 
         private IEnumerator ClickBlink()
         {
-            Debug.Log($"ClickBlink called");
+            //Debug.Log($"ClickBlink called");
             float tempTime = 0f;
             byte alphaVal0 = 0, alphaVal1 = 1;
 

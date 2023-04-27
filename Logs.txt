@@ -9,3 +9,15 @@
 => Keeping default gravity scale to 9.
 => Could code such that, the Spawn is invoked 2 or 3 times in a single Call.
 => [Importatant] Set to IL2CPP for build
+
+-------------------------------------------------------------------
+							27th April
+-------------------------------------------------------------------
+=> Adding Particle System
+	(-) Player unAlive.
+=> Delay on Game Over Screen
+	(-) 0.6f may be enough for the particle systems to display fully.
+	(-) Camera Shake
+=> Finding SFX
+	(-) Sound Effect from <a href="https://pixabay.com/sound-effects/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=6316">Pixabay</a> Natty23
+	(-) Sound Effect from <a href="https://pixabay.com/?utm_source=link-attribution&amp;utm_medium=referral&amp;utm_campaign=music&amp;utm_content=6435">Pixabay</a>

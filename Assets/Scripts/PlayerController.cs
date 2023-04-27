@@ -18,9 +18,16 @@ namespace Double_Jump
         private bool unAlive = false;
         private byte jumpCount;
 
+        [Header("Particle System")]
+        [SerializeField] private GameObject[] player_PS;
+
         [Header("Local Reference Script")]
         [SerializeField] private GameLogic localGameLogic;
 
+        [Header("Audio Clip")]
+        [SerializeField] private AudioClip[] clips_SE;
+        [SerializeField] private AudioSource playerAudioSource;
+            
         private void OnEnable()
         {
             localGameLogic.OnGameRestart += ResetPlayerStats;   
@@ -40,7 +47,7 @@ namespace Double_Jump
         // Update is called once per frame
         private void Update()
         {
-            if (!unAlive && jumpCount < 2)
+            if (!GameManager.instance.gamePaused && GameManager.instance.gameStarted && !unAlive && jumpCount < 2)
             {
 #if MOBILE_CONTROLS
                 if (Touch.activeTouches.Count > 0 && Touch.activeTouches[0].phase == UnityEngine.InputSystem.TouchPhase.Began)
@@ -51,6 +58,7 @@ namespace Double_Jump
                     //Debug.Log($"Pressed");
                     jumpCount++;
                     playerRb.velocity = new Vector2(0f, jumpForce);
+                    playerAudioSource.PlayOneShot(clips_SE[0]);
                 }
             }
         }
@@ -62,12 +70,15 @@ namespace Double_Jump
                 if (collision.CompareTag("Obstacle"))
                 {
                     //Debug.Log($"Got Hit : {collision.name}");             //Working
-                    //UnAlive();
+                    UnAlive();
                 }
 
                 if (collision.CompareTag("Ground"))
                 {
                     jumpCount = 0;
+                    playerRb.velocity = Vector2.zero;
+                    player_PS[2].GetComponent<ParticleSystem>().Play();
+
                     //Debug.Log($"Resetting Jump Counter : {jumpCount}");
                 }
             }
@@ -79,6 +90,17 @@ namespace Double_Jump
             localGameLogic.OnPlayerUnAlive?.Invoke(false);
             transform.GetComponent<SpriteRenderer>().enabled = false;
             GameManager.instance.gameStarted = false;
+
+            playerAudioSource.PlayOneShot(clips_SE[1]);
+
+            //Reset RigidBody2D
+            playerRb.bodyType = RigidbodyType2D.Kinematic;
+            playerRb.velocity = Vector2.zero;
+
+            for (int i = 0; i < 2; i++)
+            {
+                player_PS[i].SetActive(true);
+            }
             //Debug.Log($"Player UnAlive : {unAlive}");
         }
 
@@ -87,6 +109,13 @@ namespace Double_Jump
             unAlive = false;
             jumpCount = 0;
             transform.GetComponent<SpriteRenderer>().enabled = true;
+            playerRb.bodyType = RigidbodyType2D.Dynamic;
+            transform.position = new Vector2(0f, -3.12f);
+
+            for (int i = 0; i < 2; i++)
+            {
+                player_PS[i].SetActive(false);
+            }
         }
     }
 }

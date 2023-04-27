@@ -3,6 +3,7 @@ using UnityEngine;
 
 namespace Double_Jump
 {
+    //[ExecuteInEditMode]
     public class ObstacleController : MonoBehaviour
     {
         [SerializeField] private ObstacleTag obstacleTag;
@@ -10,6 +11,7 @@ namespace Double_Jump
         private float startPosX, marginPosX = 12f;
         [Range(0.1f, 1f)]
         [SerializeField] private float speedMultiplier = 1f;
+        [SerializeField] private float rotateSpeed = 2f;
 
         [Header("Local Refernce Script")]
         [SerializeField] private GameLogic localGameLogic;
@@ -24,6 +26,11 @@ namespace Double_Jump
         private void OnDisable()
         {
             CancelInvoke(nameof(CheckWithinViewPort));
+        }
+
+        private void FixedUpdate()
+        {
+            transform.Rotate(new Vector3(0f, 0f, rotateSpeed));
         }
 
         private void CheckWithinViewPort()
@@ -75,7 +82,10 @@ namespace Double_Jump
             float tempTime = 0;
             while (true)
             {
-                tempTime += speedMultiplier * Time.deltaTime;
+                if (!GameManager.instance.gameStarted)
+                    tempTime += (speedMultiplier * 2f) * Time.deltaTime;
+                else
+                    tempTime += speedMultiplier * Time.deltaTime;
 
                 if (tempTime >= 1)
                 {
