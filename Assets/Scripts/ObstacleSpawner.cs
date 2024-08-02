@@ -2,7 +2,7 @@
 
 using UnityEngine;
 
-namespace Double_Jump
+namespace Dodge_This
 {
     public class ObstacleSpawner : MonoBehaviour
     {
@@ -103,7 +103,7 @@ namespace Double_Jump
                 }
             }
             //else
-                //this.enabled = false;               //If Called again during Restart
+            //this.enabled = false;               //If Called again during Restart
 
             //Debug.Log($"Toggle Spawn status : {spawnEnabled}");
         }

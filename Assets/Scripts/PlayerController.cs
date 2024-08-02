@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
-namespace Double_Jump
+namespace Dodge_This
 {
     public class PlayerController : MonoBehaviour
     {
@@ -27,10 +27,10 @@ namespace Double_Jump
         [Header("Audio Clip")]
         [SerializeField] private AudioClip[] clips_SE;
         [SerializeField] private AudioSource playerAudioSource;
-            
+
         private void OnEnable()
         {
-            localGameLogic.OnGameRestart += ResetPlayerStats;   
+            localGameLogic.OnGameRestart += ResetPlayerStats;
         }
 
         private void OnDisable()

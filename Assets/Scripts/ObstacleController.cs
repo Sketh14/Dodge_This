@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace Double_Jump
+namespace Dodge_This
 {
     //[ExecuteInEditMode]
     public class ObstacleController : MonoBehaviour

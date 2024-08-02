@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Double_Jump
+namespace Dodge_This
 {
     [Serializable]
     public class ObstaclePool

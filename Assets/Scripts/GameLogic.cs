@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Double_Jump
+namespace Dodge_This
 {
     public class GameLogic : MonoBehaviour
     {

@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
-namespace Double_Jump
+namespace Dodge_This
 {
     public class MainGameUI : MonoBehaviour
     {
