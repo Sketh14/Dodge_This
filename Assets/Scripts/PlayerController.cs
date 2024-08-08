@@ -21,21 +21,18 @@ namespace Dodge_This
         [Header("Particle System")]
         [SerializeField] private GameObject[] player_PS;
 
-        [Header("Local Reference Script")]
-        [SerializeField] private GameLogic localGameLogic;
-
         [Header("Audio Clip")]
         [SerializeField] private AudioClip[] clips_SE;
         [SerializeField] private AudioSource playerAudioSource;
 
         private void OnEnable()
         {
-            localGameLogic.OnGameRestart += ResetPlayerStats;
+            GameManager.instance.OnGameRestart += ResetPlayerStats;
         }
 
         private void OnDisable()
         {
-            localGameLogic.OnGameRestart -= ResetPlayerStats;
+            GameManager.instance.OnGameRestart -= ResetPlayerStats;
         }
 
         // Start is called before the first frame update
@@ -87,7 +84,7 @@ namespace Dodge_This
         private void UnAlive()
         {
             unAlive = true;
-            localGameLogic.OnPlayerUnAlive?.Invoke(false);
+            GameManager.instance.OnPlayerUnAlive?.Invoke(false);
             transform.GetComponent<SpriteRenderer>().enabled = false;
             GameManager.instance.gameStarted = false;
 

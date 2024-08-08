@@ -7,18 +7,14 @@ namespace Dodge_This
     public class ObstacleController : MonoBehaviour
     {
         [SerializeField] private ObstacleTag obstacleTag;
-        public bool activated, onLeftMargin;
+        public bool DeActivated, OnLeftMargin;
         private float startPosX, marginPosX = 12f;
         [Range(0.1f, 1f)]
         [SerializeField] private float speedMultiplier = 1f;
         [SerializeField] private float rotateSpeed = 2f;
 
-        [Header("Local Refernce Script")]
-        [SerializeField] private GameLogic localGameLogic;
-
         private void OnEnable()
         {
-            localGameLogic = GameManager.instance.gameLogicReference;
             Invoke(nameof(CheckWithinViewPort), 0f);
             _ = StartCoroutine(MoveToOtherMargin());
         }
@@ -35,18 +31,17 @@ namespace Dodge_This
 
         private void CheckWithinViewPort()
         {
-            if (!activated)
+            if (!DeActivated)
             {
-
-                if (onLeftMargin)
+                if (OnLeftMargin)
                 {
                     if (transform.position.x > (marginPosX - 0.5f))
                     {
-                        activated = true;
+                        DeActivated = true;
                         gameObject.SetActive(false);
 
                         if (GameManager.instance.gameStarted)
-                            localGameLogic.OnPlayerScored?.Invoke();
+                            GameManager.instance.OnPlayerScored?.Invoke();
                         //Debug.Log($"Scored Right : {transform.name}");
                     }
                 }
@@ -54,11 +49,11 @@ namespace Dodge_This
                 {
                     if (transform.position.x < (-marginPosX + 0.5f))
                     {
-                        activated = true;
+                        DeActivated = true;
                         gameObject.SetActive(false);
 
                         if (GameManager.instance.gameStarted)
-                            localGameLogic.OnPlayerScored?.Invoke();
+                            GameManager.instance.OnPlayerScored?.Invoke();
                         //Debug.Log($"Scored Left : {transform.name}");
                     }
                 }
@@ -68,10 +63,10 @@ namespace Dodge_This
 
         public void SetStats(ref bool margin)
         {
-            activated = false;
-            onLeftMargin = margin;
+            DeActivated = false;
+            OnLeftMargin = margin;
 
-            if (onLeftMargin)
+            if (OnLeftMargin)
                 startPosX = -marginPosX;
             else
                 startPosX = marginPosX;

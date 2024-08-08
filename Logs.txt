@@ -24,6 +24,27 @@
 
 
 -------------------------------------------------------------------
+							03 August
+-------------------------------------------------------------------
+
+Refactoring ObstacleSpawner
+=> Moving PoolManager code to  ObstacleSpawner
+	(-) No need for separate scripts as there is only 1 obstacle
+
+Scene
+=> UnAssigning function calls in buttons from Scene
+
+MainGameUI
+=> Adding Buttons functionality
+=> New Click Anim
+	(-) SpaceBar Anim
+
+GameManager
+=> Moving GameLogic Actions here
+
+
+
+-------------------------------------------------------------------
 							References
 -------------------------------------------------------------------
 

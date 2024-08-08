@@ -11,53 +11,81 @@ namespace Dodge_This
     public class MainGameUI : MonoBehaviour
     {
         [Header("UI")]
-        [SerializeField] private GameObject gameOverPanel, pausedBanner;
-        [SerializeField] private RawImage clickImg;
+        [SerializeField] private GameObject pausedBanner;
+        [SerializeField] private RectTransform _clickImg, _spaceBarImg;
         private float blinkRateMultiplier = 1f;                //blink rate of 1f is enough
         [SerializeField] private TMP_Text currentScoreTxt, finalScoreTxt;
 
-        [Header("Local Reference Script")]
-        [SerializeField] private GameLogic localGameLogic;
+        // [Header("Local Reference Script")]
+        // [SerializeField] private GameManager localGameManager;
 
         [Header("Scoring")]
         private int score;
         private Coroutine clickBlinkCoroutine;
 
-        [Header("Animation")]
-        [SerializeField] private Animator cameraAnimator;
-        [SerializeField] private string[] cameraAnimatorStates;
+        [Header("Buttons")]
+        [SerializeField] private Button _startGameBt;
+        [SerializeField] private Button _restartBt, _pauseBt, _showCreditsBt, _exitCreditsBt;
+
+        [Header("Panels")]
+        [SerializeField] private GameObject _mainGameplayPanel;
+        [SerializeField] private GameObject _mainMenuPanel, _settingsPanel, _gameOverPanel;
 
         [Header("SFX")]
         [SerializeField] private AudioSource bgm_Source;
 
-        private void OnEnable()
+        private void OnDestroy()
         {
-            localGameLogic.OnPlayerUnAlive += InvokeGameOverUpdate;
-            localGameLogic.OnPlayerScored += UpdateScore;
-        }
-
-        private void OnDisable()
-        {
-            localGameLogic.OnPlayerUnAlive -= InvokeGameOverUpdate;
-            localGameLogic.OnPlayerScored -= UpdateScore;
+            GameManager.instance.OnPlayerUnAlive -= InvokeGameOverUpdate;
+            GameManager.instance.OnPlayerScored -= UpdateScore;
         }
 
         private void InvokeGameOverUpdate(bool dummyData)
         {
-            cameraAnimator.Play(cameraAnimatorStates[0], 0, 0f);
             Invoke(nameof(ShowGameOverPanel), 0.6f);
         }
 
         private void ShowGameOverPanel()
         {
-            gameOverPanel.SetActive(true);
+            _gameOverPanel.SetActive(true);
             finalScoreTxt.text = score.ToString();
             bgm_Source.Stop();
         }
 
         private void Start()
         {
-            clickBlinkCoroutine = StartCoroutine(ClickBlink());
+            clickBlinkCoroutine = StartCoroutine(ClickRate());
+
+            //Buttons
+            _startGameBt.onClick.AddListener(() =>
+            {
+                StartGame();
+                _mainMenuPanel.SetActive(false);
+                _mainGameplayPanel.SetActive(true);
+
+            });
+
+            _restartBt.onClick.AddListener(() =>
+            {
+                _mainMenuPanel.SetActive(true);
+                _mainGameplayPanel.SetActive(false);
+                _gameOverPanel.SetActive(false);
+            });
+            _pauseBt.onClick.AddListener(() => { ToggleGameStatus(true); });
+            _showCreditsBt.onClick.AddListener(() =>
+            {
+                _settingsPanel.SetActive(true);
+                _mainMenuPanel.SetActive(false);
+            });
+            _exitCreditsBt.onClick.AddListener(() =>
+            {
+                _settingsPanel.SetActive(false);
+                _mainMenuPanel.SetActive(true);
+            });
+
+            //Actions
+            GameManager.instance.OnPlayerUnAlive += InvokeGameOverUpdate;
+            GameManager.instance.OnPlayerScored += UpdateScore;
         }
 
         private void Update()
@@ -66,23 +94,23 @@ namespace Dodge_This
             if (gamePaused && Touch.activeTouches.Count > 0 && Touch.activeTouches[0].phase == UnityEngine.InputSystem.TouchPhase.Began)
 #else
             if (GameManager.instance.gamePaused && UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame)
+#endif
             {
                 ToggleGameStatus(false);
             }
-#endif
         }
 
         //On Restart button under Game Over Panel
         public void RestartGame()
         {
-            localGameLogic.OnGameRestart?.Invoke();
-            clickBlinkCoroutine = StartCoroutine(ClickBlink());
+            GameManager.instance.OnGameRestart?.Invoke();
+            clickBlinkCoroutine = StartCoroutine(ClickRate());
         }
 
         //On Start button under Main Menu Panel
         public void StartGame()
         {
-            localGameLogic.OnGameStarted?.Invoke();
+            GameManager.instance.OnGameStarted?.Invoke();
             GameManager.instance.gameStarted = true;
             bgm_Source.Play();
 
@@ -119,11 +147,11 @@ namespace Dodge_This
             currentScoreTxt.text = score.ToString();
         }
 
-        private IEnumerator ClickBlink()
+        private IEnumerator ClickRate()
         {
             //Debug.Log($"ClickBlink called");
             float tempTime = 0f;
-            byte alphaVal0 = 0, alphaVal1 = 1;
+            byte startYVal = 140, finalYVal = 120, switchStatus = 0;        //140 | 120, 137 | 126
 
             while (true)
             {
@@ -133,11 +161,18 @@ namespace Dodge_This
                 {
                     tempTime = 0f;
 
-                    byte tempAlphaVal = alphaVal0;
-                    alphaVal0 = alphaVal1;
-                    alphaVal1 = tempAlphaVal;
-
-                    clickImg.color = new Color(1f, 1f, 1f, alphaVal0);
+                    if (switchStatus == 0)
+                    {
+                        _clickImg.anchoredPosition = new Vector2(0f, finalYVal);
+                        _spaceBarImg.anchoredPosition = new Vector2(0f, finalYVal + 6);
+                        switchStatus = 1;
+                    }
+                    else
+                    {
+                        _clickImg.anchoredPosition = new Vector2(0f, startYVal);
+                        _spaceBarImg.anchoredPosition = new Vector2(0f, startYVal - 3);
+                        switchStatus = 0;
+                    }
                 }
 
                 yield return null;
