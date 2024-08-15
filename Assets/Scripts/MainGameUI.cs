@@ -24,7 +24,7 @@ namespace Dodge_This
         private Coroutine clickBlinkCoroutine;
 
         [Header("Buttons")]
-        [SerializeField] private Button _startGameBt;
+        [SerializeField] private Button _startGameBt; //Replace this
         [SerializeField] private Button _restartBt, _pauseBt, _showCreditsBt, _exitCreditsBt;
 
         [Header("Panels")]
