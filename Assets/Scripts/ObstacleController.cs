@@ -10,13 +10,18 @@ namespace Dodge_This
         public bool DeActivated, OnLeftMargin;
         private float startPosX, marginPosX = 12f;
         [Range(0.1f, 1f)]
-        [SerializeField] private float speedMultiplier = 1f;
-        [SerializeField] private float rotateSpeed = 2f;
+        [SerializeField] private float _speedMultiplier = 1f;        //0.4
+        [SerializeField] private float _ogRotateSpeed = 2f;            //6
+        private float rotateSpeed;
 
         private void OnEnable()
         {
             Invoke(nameof(CheckWithinViewPort), 0f);
             _ = StartCoroutine(MoveToOtherMargin());
+
+            rotateSpeed = _ogRotateSpeed;
+            if (OnLeftMargin)
+                rotateSpeed *= -1f;
         }
 
         private void OnDisable()
@@ -78,9 +83,9 @@ namespace Dodge_This
             while (true)
             {
                 if (!GameManager.instance.gameStarted)
-                    tempTime += (speedMultiplier * 2f) * Time.deltaTime;
+                    tempTime += (_speedMultiplier * 2f) * Time.deltaTime;
                 else
-                    tempTime += speedMultiplier * Time.deltaTime;
+                    tempTime += _speedMultiplier * Time.deltaTime;
 
                 if (tempTime >= 1)
                 {

@@ -19,26 +19,20 @@ namespace Dodge_This
         private byte jumpCount;
 
         [Header("Particle System")]
-        [SerializeField] private GameObject[] player_PS;
+        [SerializeField] private GameObject[] player_PS;                //0,1 : Player Death | 2 : Player Hit Ground Snow
 
         [Header("Audio Clip")]
         [SerializeField] private AudioClip[] clips_SE;
         [SerializeField] private AudioSource playerAudioSource;
-
-        private void OnEnable()
-        {
-            GameManager.instance.OnGameRestart += ResetPlayerStats;
-        }
 
         private void OnDisable()
         {
             GameManager.instance.OnGameRestart -= ResetPlayerStats;
         }
 
-        // Start is called before the first frame update
-        private void Start()
+        private void OnEnable()
         {
-
+            GameManager.instance.OnGameRestart += ResetPlayerStats;
         }
 
         // Update is called once per frame
@@ -85,7 +79,7 @@ namespace Dodge_This
         {
             unAlive = true;
             GameManager.instance.OnPlayerUnAlive?.Invoke(false);
-            transform.GetComponent<SpriteRenderer>().enabled = false;
+            transform.GetChild(0).gameObject.SetActive(false);
             GameManager.instance.gameStarted = false;
 
             playerAudioSource.PlayOneShot(clips_SE[1]);
@@ -105,9 +99,9 @@ namespace Dodge_This
         {
             unAlive = false;
             jumpCount = 0;
-            transform.GetComponent<SpriteRenderer>().enabled = true;
             playerRb.bodyType = RigidbodyType2D.Dynamic;
             transform.position = new Vector2(0f, -3.12f);
+            transform.GetChild(0).gameObject.SetActive(true);
 
             for (int i = 0; i < 2; i++)
             {

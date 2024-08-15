@@ -12,6 +12,7 @@ namespace Dodge_This
         [Header("Game Status")]
         [SerializeField] private Transform _mainCameraTransform;
         public bool gameStarted, gamePaused;
+        public int Score;
         private Coroutine _cameraShake;
         //protected bool ;
 
@@ -41,11 +42,18 @@ namespace Dodge_This
         private void OnDestroy()
         {
             OnPlayerUnAlive -= ShakeCameraHelper;
+            OnGameRestart -= ResetStats;
         }
 
         private void Start()
         {
             OnPlayerUnAlive += ShakeCameraHelper;
+            OnGameRestart += ResetStats;
+        }
+
+        private void ResetStats()
+        {
+            Score = 0;
         }
 
         private void ShakeCameraHelper(bool dummyData) { _ = StartCoroutine(ShakeCamera()); }

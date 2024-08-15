@@ -43,6 +43,98 @@ GameManager
 => Moving GameLogic Actions here
 
 
+-------------------------------------------------------------------
+							08 August
+-------------------------------------------------------------------
+
+Scene
+=> Making new prefab of Obstacle with Shuriken Sprite
+	(-) Modified Rotation to 6 and Speed to 0.4
+=> Changing Player Sprite
+
+-------------------------------------------
+Shader code 1
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+	vec2 q = fragCoord.xy/iResolution.xy;
+    vec2 p = -1.0+2.0*q;
+	p.x *= iResolution.x/iResolution.y;
+
+    vec3 col = vec3(0.0, 0.0, 0.0);
+	
+	// Rain
+	vec2 st =  p * vec2(.5, .01)+vec2(iTime*.3-q.y*.6*-0.0, iTime*.3);
+    float f = floor(mod(iTime/9., 2.0));
+	f = texture(iChannel0, st).y * texture(iChannel0, st*.773).x * 1.55;
+	f = clamp(pow(abs(f), 23.0) * 13.0, 0.0, q.y*.14);
+	col += f;
+    fragColor=vec4(col, 1.0 );
+}
+-----------------------------------------------
+Shader code 2
+
+float rain(vec2 uv)
+{
+    float travelTime = (iTime * 0.2) + 0.1;
+	
+    vec2 tiling = vec2(1., .01);
+    vec2 offset = vec2(travelTime * 0.5 + uv.x * 0.2, travelTime * 0.2);
+	
+    vec2 st = uv * tiling + offset;
+    
+    float rain = 0.1;  
+    float f = noise(st * 200.5) * noise(st * 125.5);  
+   	f = clamp(pow(abs(f), 15.0) * 1.5 * (rain * rain * 125.0), 0.0, 0.25);
+    return f;
+}
+
+float moon(vec2 uv)
+{
+    float moon = smoothstep(0.00, -0.01, length(uv - vec2(0.5, 0.75)) - 0.06);
+    moon *= smoothstep(-0.025, 0.01, length(uv - vec2(0.5 + 0.035, 0.75 + 0.01)) - 0.065);
+    moon = clamp(moon, 0., 1.);
+    
+    return moon;
+}
+
+void mainImage( out vec4 fragColor, in vec2 fragCoord )
+{
+    vec2 uv = fragCoord/iResolution.xy;
+    uv.x *= iResolution.x / iResolution.y;  
+   
+    float cloud = (1.-(fbm((uv +.2) * uv.y+.1 * iTime))) * uv.y;
+    cloud = clamp(0., 1., cloud);
+    
+   
+    float moon = moon(uv);
+  	float rain = rain(uv);
+    
+    vec3 col = vec3(0.84, 0.925, 0.941) * moon * (1. - cloud * 1.2);
+    col = mix(col, vec3(0.8, 0.8, 1.), cloud);
+    col += vec3(1.0) * rain;
+    
+    fragColor = vec4(col, 1.);
+}
+-----------------------------------------------
+
+-------------------------------------------------------------------
+							15 August
+-------------------------------------------------------------------
+
+Scene
+=> Removing BG ParticleSystem
+=> Making Noise for Shader
+=> Making Streak for Player's Trail
+
+Rain Shader
+=> Finally fixing rain shader complete
+
+MainGameUI
+=> Moving Start/Restart functionality to function
+
+GameManager
+=> Making a score field
 
 -------------------------------------------------------------------
 							References

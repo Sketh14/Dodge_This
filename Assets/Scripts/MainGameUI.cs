@@ -20,7 +20,7 @@ namespace Dodge_This
         // [SerializeField] private GameManager localGameManager;
 
         [Header("Scoring")]
-        private int score;
+        // private int score;
         private Coroutine clickBlinkCoroutine;
 
         [Header("Buttons")]
@@ -48,7 +48,7 @@ namespace Dodge_This
         private void ShowGameOverPanel()
         {
             _gameOverPanel.SetActive(true);
-            finalScoreTxt.text = score.ToString();
+            finalScoreTxt.text = GameManager.instance.Score.ToString();
             bgm_Source.Stop();
         }
 
@@ -57,20 +57,10 @@ namespace Dodge_This
             clickBlinkCoroutine = StartCoroutine(ClickRate());
 
             //Buttons
-            _startGameBt.onClick.AddListener(() =>
-            {
-                StartGame();
-                _mainMenuPanel.SetActive(false);
-                _mainGameplayPanel.SetActive(true);
+            _startGameBt.onClick.AddListener(() => StartGame());
 
-            });
+            _restartBt.onClick.AddListener(() => RestartGame());
 
-            _restartBt.onClick.AddListener(() =>
-            {
-                _mainMenuPanel.SetActive(true);
-                _mainGameplayPanel.SetActive(false);
-                _gameOverPanel.SetActive(false);
-            });
             _pauseBt.onClick.AddListener(() => { ToggleGameStatus(true); });
             _showCreditsBt.onClick.AddListener(() =>
             {
@@ -103,16 +93,24 @@ namespace Dodge_This
         //On Restart button under Game Over Panel
         public void RestartGame()
         {
+            _mainMenuPanel.SetActive(true);
+            _mainGameplayPanel.SetActive(false);
+            _gameOverPanel.SetActive(false);
             GameManager.instance.OnGameRestart?.Invoke();
             clickBlinkCoroutine = StartCoroutine(ClickRate());
+            bgm_Source.Play();
+            currentScoreTxt.text = "0";
         }
 
         //On Start button under Main Menu Panel
         public void StartGame()
         {
+            _mainMenuPanel.SetActive(false);
+            _mainGameplayPanel.SetActive(true);
+
             GameManager.instance.OnGameStarted?.Invoke();
             GameManager.instance.gameStarted = true;
-            bgm_Source.Play();
+            // bgm_Source.Play();
 
             if (clickBlinkCoroutine != null)
                 StopCoroutine(clickBlinkCoroutine);
@@ -143,8 +141,8 @@ namespace Dodge_This
 
         private void UpdateScore()
         {
-            score++;
-            currentScoreTxt.text = score.ToString();
+            GameManager.instance.Score++;
+            currentScoreTxt.text = GameManager.instance.Score.ToString();
         }
 
         private IEnumerator ClickRate()
