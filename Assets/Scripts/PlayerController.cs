@@ -49,9 +49,30 @@ namespace Dodge_This
                     //Debug.Log($"Pressed");
                     jumpCount++;
                     playerRb.velocity = new Vector2(0f, jumpForce);
+                    if (Random.Range(0, 100) > 50) _ = StartCoroutine(Flip());
                     playerAudioSource.PlayOneShot(clips_SE[0]);
                 }
             }
+        }
+
+        private IEnumerator Flip()
+        {
+            float timeElapsed = 0f;
+            float startZ = 0f, finalZ = 360f;
+            Vector3 currentRot = Vector3.zero;
+            Transform childSprite = transform.GetChild(0);
+            while (true)
+            {
+                timeElapsed += Time.deltaTime * 2f;
+                if (timeElapsed > 1f)
+                    break;
+
+                currentRot.z = Mathf.Lerp(startZ, finalZ, timeElapsed);
+                childSprite.eulerAngles = currentRot;
+
+                yield return null;
+            }
+            childSprite.eulerAngles = Vector3.zero;
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
