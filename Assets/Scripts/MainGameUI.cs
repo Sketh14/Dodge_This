@@ -24,8 +24,9 @@ namespace Dodge_This
         private Coroutine clickBlinkCoroutine;
 
         [Header("Buttons")]
-        [SerializeField] private Button _startGameBt; //Replace this
-        [SerializeField] private Button _restartBt, _pauseBt, _showCreditsBt, _exitCreditsBt;
+        // [SerializeField] private Button _startGameBt; //Replaced with Update
+        [SerializeField] private Button _restartBt;
+        [SerializeField] private Button _pauseBt, _showCreditsBt, _exitCreditsBt;
 
         [Header("Panels")]
         [SerializeField] private GameObject _mainGameplayPanel;
@@ -33,6 +34,8 @@ namespace Dodge_This
 
         [Header("SFX")]
         [SerializeField] private AudioSource bgm_Source;
+
+        private bool _gameStarted;
 
         private void OnDestroy()
         {
@@ -54,10 +57,11 @@ namespace Dodge_This
 
         private void Start()
         {
+            _gameStarted = false;
             clickBlinkCoroutine = StartCoroutine(ClickRate());
 
             //Buttons
-            _startGameBt.onClick.AddListener(() => StartGame());
+            // _startGameBt.onClick.AddListener(() => StartGame());
 
             _restartBt.onClick.AddListener(() => RestartGame());
 
@@ -81,18 +85,25 @@ namespace Dodge_This
         private void Update()
         {
 #if MOBILE_CONTROLS
-            if (gamePaused && Touch.activeTouches.Count > 0 && Touch.activeTouches[0].phase == UnityEngine.InputSystem.TouchPhase.Began)
+            if (GameManager.instance.gamePaused  && Touch.activeTouches.Count > 0 && Touch.activeTouches[0].phase == UnityEngine.InputSystem.TouchPhase.Began)
 #else
-            if (GameManager.instance.gamePaused && UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame)
+            if (UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame)
 #endif
             {
-                ToggleGameStatus(false);
+                if (_gameStarted && GameManager.instance.gamePaused)
+                    ToggleGameStatus(false);
+                else
+                {
+                    _gameStarted = true;
+                    StartGame();
+                }
             }
         }
 
         //On Restart button under Game Over Panel
         public void RestartGame()
         {
+            _gameStarted = false;
             _mainMenuPanel.SetActive(true);
             _mainGameplayPanel.SetActive(false);
             _gameOverPanel.SetActive(false);

@@ -112,6 +112,9 @@ namespace Dodge_This
                     Invoke(nameof(SpawnObstacle), spawnTime - timeAtSpawn);
                 else
                 {
+                    spawnEnabled = false;
+                    // Debug.Log($"spawnEnabled : {spawnEnabled}");
+
                     //Get the time difference between the invoke time and the time went when the pause button was clicked
                     timeAtSpawn = Time.unscaledTime - timeAtSpawn;
                     CancelInvoke(nameof(SpawnObstacle));

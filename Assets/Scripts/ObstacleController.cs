@@ -8,7 +8,8 @@ namespace Dodge_This
     {
         [SerializeField] private ObstacleTag obstacleTag;
         public bool DeActivated, OnLeftMargin;
-        private float startPosX, marginPosX = 12f;
+        private float startPosX;
+        [SerializeField] private float marginPosX = 10f;
         [Range(0.1f, 1f)]
         [SerializeField] private float _speedMultiplier = 1f;        //0.4
         [SerializeField] private float _ogRotateSpeed = 2f;            //6
@@ -40,7 +41,7 @@ namespace Dodge_This
             {
                 if (OnLeftMargin)
                 {
-                    if (transform.position.x > (marginPosX - 0.5f))
+                    if (transform.position.x > (marginPosX - 0.5f))         //Because of how MoveToOtherMargin works
                     {
                         DeActivated = true;
                         gameObject.SetActive(false);
@@ -52,7 +53,7 @@ namespace Dodge_This
                 }
                 else
                 {
-                    if (transform.position.x < (-marginPosX + 0.5f))
+                    if (transform.position.x < (-marginPosX + 0.5))         //Because of how MoveToOtherMargin works
                     {
                         DeActivated = true;
                         gameObject.SetActive(false);
@@ -63,7 +64,7 @@ namespace Dodge_This
                     }
                 }
             }
-            Invoke(nameof(CheckWithinViewPort), 1f);
+            Invoke(nameof(CheckWithinViewPort), 0.5f);
         }
 
         public void SetStats(ref bool margin)
@@ -83,7 +84,7 @@ namespace Dodge_This
             while (true)
             {
                 if (!GameManager.instance.gameStarted)
-                    tempTime += (_speedMultiplier * 2f) * Time.deltaTime;
+                    tempTime += (_speedMultiplier * 4f) * Time.deltaTime;
                 else
                     tempTime += _speedMultiplier * Time.deltaTime;
 

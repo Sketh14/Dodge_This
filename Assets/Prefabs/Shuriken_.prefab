@@ -84,7 +84,8 @@ MonoBehaviour:
   obstacleTag: 0
   DeActivated: 0
   OnLeftMargin: 0
-  _speedMultiplier: 0.4
+  marginPosX: 8
+  _ogSpeedMultiplier: 0.4
   _ogRotateSpeed: 6
 --- !u!1 &8779778376099096503
 GameObject:
@@ -159,7 +160,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: c6d6c4189bf01a5478ae3ddd3cf54093, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 412941b79d425714199305621109fcfb, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
