@@ -74,7 +74,8 @@ Shader "Unlit/RainUnlitShader"
 
                 //Rain                
                 fixed timeVal = _Time * _Speed;
-                fixed2 st = p * fixed2(0.5, -0.01) + fixed2(timeVal , timeVal);
+                fixed2 st = p * fixed2(0.5, -0.01) + fixed2(timeVal , timeVal);          //For Editor
+                // fixed2 st = p * fixed2(0.5, 0.01) + fixed2(timeVal , timeVal);
                 // fixed2 st = p * fixed2(0.01, 0.5) + fixed2(timeVal , timeVal);
 
                 // fixed f = floor(fmod(_Time/9.0, 2.0));
@@ -82,8 +83,8 @@ Shader "Unlit/RainUnlitShader"
                 f = tex2D(_MainTex, st).y * tex2D(_MainTex, st * 0.4).x * 1.2;
 
                 // fixed f = noise(st * 200.5) * noise(st * 125.5);
-                f = clamp(pow(abs(f), 23.0) * 8.0, 0.0, (1 - q.y) * _Intensity);             // Decide the intensity of the visibility
-                // f = clamp(pow(abs(f), 23.0) * 13.0, 0.0, q.y * _Intensity);             // Decide the intensity of the visibility
+                f = clamp(pow(abs(f), 23.0) * 8.0, 0.0, (1 - q.y) * _Intensity);             // Decide the intensity of the visibility          //For Editor
+                // f = clamp(pow(abs(f), 23.0) * 8.0, 0.0, q.y * _Intensity);             // Decide the intensity of the visibility
                 // col += f;
                 col.x += f; col.y += f; col.z += f;
 

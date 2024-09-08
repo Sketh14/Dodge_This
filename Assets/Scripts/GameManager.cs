@@ -11,7 +11,7 @@ namespace Dodge_This
 
         [Header("Game Status")]
         [SerializeField] private Transform _mainCameraTransform;
-        public bool gameStarted, gamePaused;
+        public bool gameStarted, gamePaused, PlayerUnAlive;
         public int Score;
         private Coroutine _cameraShake;
         //protected bool ;

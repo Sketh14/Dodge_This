@@ -41,7 +41,7 @@ namespace Dodge_This
             {
                 if (OnLeftMargin)
                 {
-                    if (transform.position.x > (marginPosX - 0.5f))         //Because of how MoveToOtherMargin works
+                    if (transform.position.x > (marginPosX - 1f))         //Because of how MoveToOtherMargin works
                     {
                         DeActivated = true;
                         gameObject.SetActive(false);
@@ -53,7 +53,7 @@ namespace Dodge_This
                 }
                 else
                 {
-                    if (transform.position.x < (-marginPosX + 0.5))         //Because of how MoveToOtherMargin works
+                    if (transform.position.x < (-marginPosX + 1f))         //Because of how MoveToOtherMargin works
                     {
                         DeActivated = true;
                         gameObject.SetActive(false);

@@ -99,6 +99,7 @@ namespace Dodge_This
         private void UnAlive()
         {
             unAlive = true;
+            GameManager.instance.PlayerUnAlive = true;
             GameManager.instance.OnPlayerUnAlive?.Invoke(false);
             transform.GetChild(0).gameObject.SetActive(false);
             GameManager.instance.gameStarted = false;
@@ -120,6 +121,7 @@ namespace Dodge_This
         {
             unAlive = false;
             jumpCount = 0;
+            GameManager.instance.PlayerUnAlive = false;
             playerRb.bodyType = RigidbodyType2D.Dynamic;
             transform.position = new Vector2(0f, -3.12f);
             transform.GetChild(0).gameObject.SetActive(true);

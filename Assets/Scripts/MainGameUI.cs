@@ -92,7 +92,7 @@ namespace Dodge_This
             {
                 if (_gameStarted && GameManager.instance.gamePaused)
                     ToggleGameStatus(false);
-                else
+                else if (!GameManager.instance.PlayerUnAlive)
                 {
                     _gameStarted = true;
                     StartGame();

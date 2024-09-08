@@ -84,9 +84,9 @@ MonoBehaviour:
   obstacleTag: 0
   DeActivated: 0
   OnLeftMargin: 0
-  marginPosX: 8
-  _ogSpeedMultiplier: 0.4
-  _ogRotateSpeed: 6
+  marginPosX: 11
+  _speedMultiplier: 0.5
+  _ogRotateSpeed: 8
 --- !u!1 &8779778376099096503
 GameObject:
   m_ObjectHideFlags: 0

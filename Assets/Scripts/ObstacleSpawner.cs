@@ -29,14 +29,9 @@ namespace Dodge_This
         // [Header("Local Refernce Script")]
         // [SerializeField] private GameLogic localGameLogic;
 
-        private void OnEnable()
+        private void OnDestroy()
         {
-            GameManager.instance.OnGameStarted += InvokeObstacleSpawn;
-            GameManager.instance.OnPlayerUnAlive += ToggleSpawn;
-        }
 
-        private void OnDisable()
-        {
             GameManager.instance.OnGameStarted -= InvokeObstacleSpawn;
             GameManager.instance.OnPlayerUnAlive -= ToggleSpawn;
         }
@@ -48,6 +43,9 @@ namespace Dodge_This
             //startPosX = transform.position.x;
             _obstaclePool = new Queue<GameObject>();
             AllocatePool();
+
+            GameManager.instance.OnGameStarted += InvokeObstacleSpawn;
+            GameManager.instance.OnPlayerUnAlive += ToggleSpawn;
         }
 
         private void InvokeObstacleSpawn()
@@ -104,6 +102,7 @@ namespace Dodge_This
             //if (GameManager.instance.gameStarted)
             {
                 spawnEnabled = toggleValue;
+                // Debug.Log($"spawnEnabled : {spawnEnabled}");
                 //Debug.Log($"Time Now : {Time.unscaledTime}");
 
                 //In case the next obstacle is in the process of spawning and gets stopped as the spawn variable is not enabled
@@ -112,9 +111,6 @@ namespace Dodge_This
                     Invoke(nameof(SpawnObstacle), spawnTime - timeAtSpawn);
                 else
                 {
-                    spawnEnabled = false;
-                    // Debug.Log($"spawnEnabled : {spawnEnabled}");
-
                     //Get the time difference between the invoke time and the time went when the pause button was clicked
                     timeAtSpawn = Time.unscaledTime - timeAtSpawn;
                     CancelInvoke(nameof(SpawnObstacle));
